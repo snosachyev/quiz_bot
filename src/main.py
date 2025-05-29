@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher
 
 
 from settings.config import API_TOKEN
-from db import create_table
+from repository import create_table
 from routers import quiz_router
 
 # Включаем логирование, чтобы не пропустить важные сообщения
