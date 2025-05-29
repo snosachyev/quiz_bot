@@ -13,7 +13,7 @@ quiz_router = Router()
 
 # Загрузить квиз
 with open(QUIZ_DATA, "r", encoding="utf-8") as f:
-    quiz_data = json.load(f)[:3]
+    quiz_data = json.load(f)
 
 
 def generate_options_keyboard(answer_options, right_answer):
