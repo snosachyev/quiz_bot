@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher
 from settings.config import API_TOKEN
 from repository import create_table
 from routers import quiz_router
+from middlewares import BotMiddleware
 
 # Включаем логирование, чтобы не пропустить важные сообщения
 logging.basicConfig(level=logging.INFO)
@@ -14,6 +15,8 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 # Диспетчер
 dp = Dispatcher()
+
+dp.message.middleware(BotMiddleware())
 
 dp.include_router(quiz_router)
 
