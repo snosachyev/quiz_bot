@@ -6,7 +6,7 @@ from aiogram.filters import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 from repository import (get_quiz_index, update_quiz_index, add_quiz_statistic,
-                        get_user_quiz_statistic)
+                        get_user_quiz_statistic, get_users_quiz_statistics)
 from settings.config import QUIZ_DATA
 from settings.logging import logger
 from schemas import QuizData, QuizDataItem
@@ -127,3 +127,16 @@ async def new_quiz(message):
 async def cmd_quiz(message: types.Message):
     await message.answer(f"Давайте начнем квиз!")
     await new_quiz(message)
+
+
+@quiz_router.message(F.text == "Получить статистику пользователей")
+async def cmd_quiz(message: types.Message):
+    await message.answer(f"Статистика пользователей")
+    users_quiz_statistics = await get_users_quiz_statistics()
+
+    message_statistic = ''
+    for row in users_quiz_statistics:
+        answer_result = 'верно' if row[2] else 'неверно'
+        message_statistic += (f"пользователь: {row[3]} номер вопроса: {row[1]} попыток: {row[0]} "
+                              f"результат ответа {answer_result}\n")
+    await message.answer(message_statistic)
