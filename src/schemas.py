@@ -12,3 +12,5 @@ class QuizDataItem(BaseModel):
     correct_option: int
 
 
+class QuizData(BaseModel):
+    items: List[QuizDataItem]

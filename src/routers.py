@@ -9,14 +9,15 @@ from repository import (get_quiz_index, update_quiz_index, add_quiz_statistic,
                         get_user_quiz_statistic)
 from settings.config import QUIZ_DATA
 from settings.logging import logger
+from schemas import QuizData, QuizDataItem
 
 quiz_router = Router()
 
 # Загрузить квиз
 try:
     with open(QUIZ_DATA, "r", encoding="utf-8") as f:
-        quiz_data = json.load(f)
-except (FileNotFoundError, json.decoder.JSONDecodeError) as e:
+        quiz_data: QuizData = json.load(f)['items']
+except (FileNotFoundError, KeyError, json.decoder.JSONDecodeError) as e:
     logger.error(e)
     quiz_data = []
 
@@ -67,9 +68,10 @@ async def wrong_answer(callback: types.CallbackQuery):
     # Получение текущего вопроса из словаря состояний пользователя
     current_question_index = await get_quiz_index(callback.from_user.id)
 
-    correct_option = quiz_data[current_question_index]['correct_option']
+    quiz_item: QuizDataItem = quiz_data[current_question_index]
+    correct_option = quiz_item['correct_option']
     text = (f"Неправильно. Правильный ответ: "
-            f"{quiz_data[current_question_index]['options'][correct_option]}")
+            f"{quiz_item['options'][correct_option]}")
 
     await answer(callback, text)
 
