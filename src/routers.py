@@ -12,8 +12,11 @@ from settings.config import QUIZ_DATA
 quiz_router = Router()
 
 # Загрузить квиз
-with open(QUIZ_DATA, "r", encoding="utf-8") as f:
-    quiz_data = json.load(f)
+try:
+    with open(QUIZ_DATA, "r", encoding="utf-8") as f:
+        quiz_data = json.load(f)
+except (FileNotFoundError, json.decoder.JSONDecodeError):
+    quiz_data = []
 
 
 def generate_options_keyboard(answer_options, right_answer):
@@ -81,10 +84,14 @@ async def cmd_start(message: types.Message):
 async def get_question(message, user_id):
     # Получение текущего вопроса из словаря состояний пользователя
     current_question_index = await get_quiz_index(user_id)
-    correct_index = quiz_data[current_question_index]['correct_option']
-    opts = quiz_data[current_question_index]['options']
+    try:
+        index = quiz_data[current_question_index]
+    except IndexError:
+        return await message.answer("технические проблемы")
+    correct_index = index['correct_option']
+    opts = index['options']
     kb = generate_options_keyboard(opts, opts[correct_index])
-    await message.answer(f"{quiz_data[current_question_index]['question']}",
+    await message.answer(f"{index['question']}",
                          reply_markup=kb)
 
 
