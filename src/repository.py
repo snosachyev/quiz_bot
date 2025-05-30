@@ -17,18 +17,24 @@ async def get_quiz_index(user_id):
 
 async def get_user_quiz_statistic(user_id):
     # Получаем статистику для заданного пользователя
-    sql = (f'select count() as count_type_answers, question_index, result '
-           f'from quiz_statistic '
-           f'WHERE user_id = (?) GROUP BY question_index, result')
+    sql = ('select count() as count_type_answers, question_index, result '
+           'from quiz_statistic '
+           'WHERE user_id = (?) GROUP BY question_index, result')
     return await execute_async_db(sql=sql, parameters=(user_id,), fetchall=True)
 
 
 async def add_quiz_statistic(user_id, index, result):
     # Создаем соединение с базой данных (если она не существует, она будет создана)
-    sql = (f'INSERT INTO quiz_statistic (user_id, question_index, result) VALUES'
-           f' (?, ?, ?)')
+    sql = ('INSERT INTO quiz_statistic (user_id, question_index, result) VALUES'
+           ' (?, ?, ?)')
     return await execute_async_db(sql=sql, parameters=(user_id, index, result), commit=True)
 
+async def get_users_quiz_statistics():
+    # Получаем статистику для заданного пользователя
+    sql = ('select count() as count_type_answers, question_index, result, user_id '
+           'from quiz_statistic '
+           ' GROUP BY user_id, question_index, result')
+    return await execute_async_db(sql=sql, fetchall=True)
 
 async def update_quiz_index(user_id, index):
     # Создаем соединение с базой данных (если она не существует, она будет создана)
