@@ -78,9 +78,11 @@ async def wrong_answer(callback: types.CallbackQuery):
 
 # Хэндлер на команду /start
 @quiz_router.message(Command("start"))
-async def cmd_start(message: types.Message):
+async def cmd_start(message: types.Message, is_admin: bool):
     builder = ReplyKeyboardBuilder()
     builder.add(types.KeyboardButton(text="Начать игру"))
+    if is_admin:
+        builder.add(types.KeyboardButton(text="Получить статистику пользователей"))
     await message.answer("Добро пожаловать в квиз!",
                          reply_markup=builder.as_markup(resize_keyboard=True))
 
