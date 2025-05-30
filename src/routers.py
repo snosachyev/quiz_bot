@@ -8,6 +8,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from repository import (get_quiz_index, update_quiz_index, add_quiz_statistic,
                         get_user_quiz_statistic)
 from settings.config import QUIZ_DATA
+from settings.logging import logger
 
 quiz_router = Router()
 
@@ -15,7 +16,8 @@ quiz_router = Router()
 try:
     with open(QUIZ_DATA, "r", encoding="utf-8") as f:
         quiz_data = json.load(f)
-except (FileNotFoundError, json.decoder.JSONDecodeError):
+except (FileNotFoundError, json.decoder.JSONDecodeError) as e:
+    logger.error(e)
     quiz_data = []
 
 
@@ -86,7 +88,8 @@ async def get_question(message, user_id):
     current_question_index = await get_quiz_index(user_id)
     try:
         index = quiz_data[current_question_index]
-    except IndexError:
+    except IndexError as ex:
+        logger.error(ex)
         return await message.answer("технические проблемы")
     correct_index = index['correct_option']
     opts = index['options']

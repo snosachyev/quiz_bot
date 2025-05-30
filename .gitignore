@@ -1,5 +1,6 @@
 .env
 venv
 quiz_bot.db
+loger.log
 
 __pycache__
